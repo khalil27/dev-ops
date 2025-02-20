@@ -10,9 +10,14 @@ pipeline {
             steps {
                 git(
                     branch: 'master',
-                    url: 'https://github.com/khalil27/dev-ops.git',
-                    credentialsId: 'jenkins-example-github-pat'
+                    url: 'https://github.com/khalil27/dev-ops.git'
                 )
+            }
+        }
+                stage('compile') {
+            steps {
+                echo "🛠️ Compilation du projet avec Maven..."
+                sh 'mvn clean compile'
             }
         }
     }
