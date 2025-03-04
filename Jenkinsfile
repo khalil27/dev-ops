@@ -4,9 +4,6 @@ pipeline {
     tools {
         maven 'M2_HOME'
     }
-     environment {
-            MAVEN_SETTINGS = '/usr/share/maven/conf/settings.xml'  // Chemin vers le fichier settings.xml dans Jenkins
-        }
 
     stages {
         stage('GIT') {
@@ -30,10 +27,10 @@ pipeline {
         }
                
         stage('Deploy to Nexus') {
-             steps {
-                            echo "🚀 Déploiement de l'artefact sur Nexus..."
-                            sh 'mvn deploy -Dmaven.test.skip=true -s $MAVEN_SETTINGS'
-                        }
+            steps {
+                echo "🚀 Déploiement de l'artefact sur Nexus..."
+                sh 'mvn deploy -Dmaven.test.skip=true'
+            }
         }
  
     }
