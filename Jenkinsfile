@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NEXUS_URL = 'http://192.168.182.132:8081//repository/maven-releases/'
+        NEXUS_URL = 'http://192.168.182.132:8081/repository/maven-releases/'
         NEXUS_USERNAME = credentials('nexus-username')
         NEXUS_PASSWORD = credentials('nexus-password')
     }
@@ -32,4 +32,3 @@ pipeline {
         }
     }
 }
-192.168.56.10
