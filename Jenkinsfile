@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         NEXUS_URL = 'http://192.168.182.132:8081/repository/maven-releases/'
-        NEXUS_USERNAME = credentials('nexus-username')
-        NEXUS_PASSWORD = credentials('nexus-password')
     }
 
     stages {
@@ -23,10 +21,17 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 script {
-                    // Deploy to Nexus via Maven with authentication
-                    sh """
-                    mvn deploy -DskipTests -DnexusUsername=${NEXUS_USERNAME} -DnexusPassword=${NEXUS_PASSWORD}
-                    """
+                    // Utilisation des credentials Jenkins de type Secret Text pour username et password
+                    withCredentials([string(credentialsId: 'nexus-username', variable: 'NEXUS_USERNAME'),
+                                     string(credentialsId: 'nexus-password', variable: 'NEXUS_PASSWORD')]) {
+                        // Déploiement avec Maven en utilisant les identifiants
+                        sh """
+                        mvn deploy -DskipTests \
+                            -Dnexus.username=${NEXUS_USERNAME} \
+                            -Dnexus.password=${NEXUS_PASSWORD} \
+                            -DaltDeploymentRepository=deploymentRepo::default::${NEXUS_URL}
+                        """
+                    }
                 }
             }
         }
