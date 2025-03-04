@@ -1,38 +1,35 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'M2_HOME'
+    environment {
+        NEXUS_URL = 'http://192.168.56.10:8081/repository/maven-releases/'
+        NEXUS_USERNAME = credentials('nexus-username')
+        NEXUS_PASSWORD = credentials('nexus-password')
     }
 
     stages {
-        stage('GIT') {
+        stage('Checkout') {
             steps {
-                git(
-                    branch: 'master',
-                    url: 'https://github.com/khalil27/dev-ops.git'
-                )
+                git 'https://github.com/khalil27/dev-ops.git'
             }
         }
-                stage('compile') {
+
+        stage('Build') {
             steps {
-                echo "🛠️ Compilation du projet avec Maven..."
-                sh 'mvn clean compile'
+                sh 'mvn clean install'
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                sh 'mvn sonar:sonar -Dsonar.token=squ_c1510c00ca013d4e37ea3aab9a89c9b683915e2a -Dmaven.test.skip=true'
-            }
-        }
-               
+
         stage('Deploy to Nexus') {
             steps {
-                echo "🚀 Déploiement de l'artefact sur Nexus..."
-                sh 'mvn deploy -Dmaven.test.skip=true'
+                script {
+                    // Deploy to Nexus via Maven with authentication
+                    sh """
+                    mvn deploy -DskipTests -DnexusUsername=${NEXUS_USERNAME} -DnexusPassword=${NEXUS_PASSWORD}
+                    """
+                }
             }
         }
- 
     }
 }
-
+192.168.56.10
