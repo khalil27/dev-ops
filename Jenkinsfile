@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         NEXUS_URL = 'http://192.168.182.132:8081/repository/maven-releases/'
-        NEXUS_USERNAME = 'admin'   // ⚠️ Mets ton username ici
-        NEXUS_PASSWORD = 'Khalil$200' // ⚠️ Mets ton mot de passe ici
+        NEXUS_USERNAME = 'admin'
+        NEXUS_PASSWORD = 'Khalil$200'
     }
 
     stages {
@@ -25,10 +25,9 @@ pipeline {
         stage('Deploy to Nexus') {
             steps {
                 echo 'Deploying the artifact to Nexus Repository'
-
                 sh """
                 mvn deploy -X -DskipTests \
-                    -DaltDeploymentRepository=deploymentRepo::default::http://$NEXUS_USERNAME:$NEXUS_PASSWORD@192.168.182.132:8081/repository/maven-releases/
+                    -DaltDeploymentRepository=deploymentRepo::default::http://${NEXUS_USERNAME}:${NEXUS_PASSWORD}@192.168.182.132:8081/repository/maven-releases/
                 """
             }
         }
